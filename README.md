@@ -47,6 +47,8 @@ $\alpha = \sqrt{\frac{k}{2 z_0}} a $, $\quad \beta = \sqrt{\frac{k}{2 z_0}} b$.
 
 This integral cannot be calculated analytically, we have to use numerical methods. The integral function is rapidly oscillating, and it is convenient to bring such integrals to the solution of a system of linear algebraic equations by the [Levin collocation method](https://www.iccs-meeting.org/archive/iccs2020/papers/121380029.pdf).
 
+---
+
 ## Levin's Collocation Method for Integrating Rapidly Oscillating Functions
 
 Levin's collocation method is a powerful numerical technique designed to efficiently integrate functions that exhibit rapid oscillations.
@@ -66,3 +68,53 @@ The main idea behind Levin's method is to approximate the integral of a rapidly 
 5. **Final Integration**: Use the obtained coefficients to compute the integral, often leading to significantly improved accuracy compared to standard methods.
 
 ### Deeper into details
+Levin’s method is designed to compute oscillatory integrals of the form:
+
+$I = \int_a^b f(s) e^{i \omega g(s)} ds$
+
+To do this, we will try to find a function $\varphi(s)$ satisfying:
+
+$\varphi'(s) + i ω g'(s) \varphi(s) = f(s)$
+
+Then:
+
+$I = \varphi(s) e^{i ω g(s)}|_{a}^{b}$
+
+We rewrite the Fresnel integral in the standard form used in Levin's method:
+
+$u(x) = \int_{-a}^{a} f(s) e^{i \omega g(s)} \ dx_0$
+
+with:
+- $f(s) = 1$,
+- $g(s) = (x - s)^2$,
+- $ω = π / (λ z)$.
+
+We approximate $\varphi(s)$ using Chebyshev polynomials:
+
+$\varphi(s) = ∑_{k=0}^{\infty} c_k T_k(s')$
+
+where:
+- $T_k$ is the $k$-th Chebyshev polynomial,
+- s' is a new variable after affine transformation of the set [-a,a] to [-1,1]. So, $s' = s/a$
+
+We differentiate $\varphi(s')$ using the Chebyshev basis derivative matrix $D$, and evaluate the ODE at $N+1$ Chebyshev-Gauss-Lobatto collocation points ${s_j}$.
+We require strict fulfillment of the equalities at these points.
+
+$\varphi'(s_j) + i ω g'(s_j) \varphi(s_j) = f(s_j)$
+
+In matrix form, this gives the linear system:
+$A c = b$
+
+where:
+
+- $A = D T + i ω \text{ diag}(g'(s_j)) T$
+  - $T$ is the matrix of Chebyshev polynomials evaluated at collocation points,
+  - $D$ is the Chebyshev derivative matrix (precomputed),
+  - $g'(s_j) = -2(x - s_j)$ for $g(s) = (x - s)^2$.
+- $c$ is the vector of Chebyshev coefficients,
+- $b$ is the vector with entries $f(s_j)$.
+
+A matrix does not have any positive certainty or symmetry, so we are going to solve this linear system via [GMRES](https://en.wikipedia.org/wiki/Generalized_minimal_residual_method) iteration algorithm.
+Once the coefficients c are obtained, the integral is approximated by:
+
+$u(x) ≈ \varphi(a) e^{i ω g(a)} - \varphi(-a) e^{i ω g(-a)}$
