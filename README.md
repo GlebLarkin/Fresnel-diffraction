@@ -1,4 +1,4 @@
-# Fresnel-Kirchhoff diffraction
+# Вiffraction
 ## General diffraction theory
 
 The phenomenon of diffraction is well described by the [Fresnel-Kirchhoff integral](https://en.m.wikipedia.org/wiki/Kirchhoff%27s_diffraction_formula):
@@ -9,8 +9,9 @@ We can divide the phenomenon of diffraction for two main types - Fresnel diffrac
 $n = \frac{a^2}{\lambda z_0}$ 
 where a is the characteristic size of the aperture, $\lambda$ is a wavelength and $z_0$ is distance to the screen.
 
-- $n >= 1$ => we have can simplify Fresnel-Kirchhoff integral via Fraunhofer approximation
-- $n << 1$ => we have can simplify Fresnel-Kirchhoff integral via Fresnel approximation
+- $n >= 1$ => we can simplify Fresnel-Kirchhoff integral via Fraunhofer approximation
+- $n << 1$ => we can simplify Fresnel-Kirchhoff integral via Fresnel approximation
+- $n \sim 0.5$ => we have to calculate the Fresnel-Kirchhoff integral in general form
 
 ## Fraunhofer approximation
 _Under the Fraunhofer approximation pepe pe pepe ._
@@ -114,7 +115,10 @@ where:
 - $c$ is the vector of Chebyshev coefficients,
 - $b$ is the vector with entries $f(s_j)$.
 
-A matrix does not have any positive certainty or symmetry, so we are going to solve this linear system via [GMRES](https://en.wikipedia.org/wiki/Generalized_minimal_residual_method) iteration algorithm.
+A matrix does not have any positive certainty or symmetry, so we can solve this linear system via [GMRES](https://en.wikipedia.org/wiki/Generalized_minimal_residual_method) iteration algorithm.
 Once the coefficients c are obtained, the integral is approximated by:
 
 $u(x) ≈ \varphi(a) e^{i ω g(a)} - \varphi(-a) e^{i ω g(-a)}$
+
+---
+
